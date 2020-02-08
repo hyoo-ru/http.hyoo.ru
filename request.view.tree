@@ -1,4 +1,4 @@
-$mol_app_request $mol_page
+$hyoo_http $mol_page
 	title @ \HTTP request browser
 	body /
 		<= Uri_input $mol_string

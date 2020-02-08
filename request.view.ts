@@ -1,6 +1,6 @@
 namespace $.$$ {
 
-	export class $mol_app_request extends $.$mol_app_request {
+	export class $hyoo_http extends $.$hyoo_http {
 
 		uri( next? : string ) {
 			return this.$.$mol_state_arg.value( 'uri' , next ) || super.uri()
