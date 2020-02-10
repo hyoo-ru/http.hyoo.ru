@@ -1,0 +1,8 @@
+{
+	"$hyoo_http_request_body_title": "Тело запроса",
+	"$hyoo_http_request_headers_title": "Заголовки запроса",
+	"$hyoo_http_response_body_title": "Тело ответа",
+	"$hyoo_http_response_headers_title": "Заголовки ответа",
+	"$hyoo_http_title": "HTTP запросы онлайн",
+	"$hyoo_http_uri_hint": "URI"
+}
