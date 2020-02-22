@@ -5279,13 +5279,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/http/request.view.css", "[hyoo_http_uri_input] {\n\tflex: 0 0 auto;\n}\n\n[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n}\n\n[hyoo_http_request] > * ,\n[hyoo_http_response] > * {\n\tmargin: .5rem;\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n\tpadding: .5rem;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n\tpadding: .5rem;\n}\n\n");
-})($ || ($ = {}));
-//request.view.css.js.map
-;
-"use strict";
-var $;
-(function ($) {
     class $hyoo_http extends $.$mol_page {
         title() {
             return this.$.$mol_locale.text("$hyoo_http_title");
@@ -5450,7 +5443,7 @@ var $;
     ], $hyoo_http.prototype, "Response_body_output", null);
     $.$hyoo_http = $hyoo_http;
 })($ || ($ = {}));
-//request.view.tree.js.map
+//http.view.tree.js.map
 ;
 "use strict";
 var $;
@@ -5507,7 +5500,14 @@ var $;
         $$.$hyoo_http = $hyoo_http;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-//request.view.js.map
+//http.view.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_uri_input] {\n\tflex: 0 0 auto;\n}\n\n[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n}\n\n[hyoo_http_request] > * ,\n[hyoo_http_response] > * {\n\tmargin: .5rem;\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n\tpadding: .5rem;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n\tpadding: .5rem;\n}\n\n");
+})($ || ($ = {}));
+//http.view.css.js.map
 ;
 "use strict";
 var $;

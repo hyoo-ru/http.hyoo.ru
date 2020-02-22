@@ -1532,9 +1532,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-}
-
-declare namespace $ {
     class $hyoo_http extends $mol_page {
         title(): string;
         body(): readonly any[];
@@ -1573,6 +1570,9 @@ declare namespace $.$$ {
         response_headers(): string;
         response_body(): string;
     }
+}
+
+declare namespace $ {
 }
 
 /// <reference types="node" />
