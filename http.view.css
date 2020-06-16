@@ -1,5 +1,6 @@
 [hyoo_http_uri_input] {
 	flex: 0 0 auto;
+	margin: .75rem;
 }
 
 [hyoo_http_body] {
@@ -14,16 +15,14 @@
 
 [hyoo_http_request] > * ,
 [hyoo_http_response] > * {
-	margin: .5rem;
+	margin: .75rem;
 }
 
 [hyoo_http_request] {
 	flex: 1 1 33%;
-	padding: .5rem;
 }
 
 [hyoo_http_response] {
 	flex: 1 1 66%;
-	padding: .5rem;
 }
 

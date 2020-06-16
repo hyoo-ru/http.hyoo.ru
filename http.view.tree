@@ -1,5 +1,11 @@
 $hyoo_http $mol_page
 	title @ \HTTP request browser
+	plugins /
+		<= Theme $mol_theme_auto
+	tools /
+		<= Lights $mol_lights_toggle
+		<= Source_link $mol_link_source
+			uri \https://github.com/hyoo-ru/http.hyoo.ru
 	body /
 		<= Uri_input $mol_string
 			value?val <=> uri?val \
