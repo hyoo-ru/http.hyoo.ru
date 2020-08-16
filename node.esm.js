@@ -4572,6 +4572,12 @@ var $;
                 color: $.$mol_theme.hover,
             }
         },
+        ':focus-within': {
+            outline: 'none',
+            background: {
+                color: $.$mol_theme.hover,
+            }
+        },
         '@': {
             mol_link_current: {
                 'true': {
