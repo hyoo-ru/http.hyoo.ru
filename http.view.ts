@@ -33,6 +33,20 @@ namespace $.$$ {
 				body : body || undefined ,
 			} )
 		}
+		
+		response_output() {
+			try {
+				this.response()
+				return super.response_output()
+			} catch( error ) {
+				if( 'then' in error ) $mol_fail_hidden( error )
+				return [ this.Response_error( error ) ]
+			}
+		}
+		
+		response_error( error: Error ) {
+			return error.message ?? error
+		}
 
 		@ $mol_mem
 		response_headers() {
