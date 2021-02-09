@@ -1143,6 +1143,25 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_status extends $mol_view {
+        status(): any;
+        minimal_height(): number;
+        minimal_width(): number;
+        sub(): readonly any[];
+        message(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_status extends $.$mol_status {
+        message(): any;
+    }
+}
+
+declare namespace $ {
     class $mol_plugin extends $mol_view {
         dom_node(next?: Element): Element;
         attr_static(): {
@@ -2318,6 +2337,7 @@ declare namespace $ {
         plugins(): readonly any[];
         tools(): readonly any[];
         body(): readonly any[];
+        Response_error(error: any): $$.$mol_status;
         Theme(): $$.$mol_theme_auto;
         Lights(): $$.$mol_lights_toggle;
         Source_link(): $mol_link_source;
@@ -2341,8 +2361,10 @@ declare namespace $ {
         response_body(): string;
         Response_body_output(): $$.$mol_textarea;
         Response_body(): $mol_labeler;
+        response_output(): readonly any[];
         Response(): $$.$mol_scroll;
         Data(): $mol_view;
+        response_error(error: any): string;
     }
 }
 
@@ -2387,6 +2409,8 @@ declare namespace $.$$ {
         request_headers_dict(): Record<string, string>;
         request_body(next?: string): string;
         response(): $mol_fetch_response;
+        response_output(): readonly any[];
+        response_error(error: Error): string;
         response_headers(): string;
         response_body(): string;
     }

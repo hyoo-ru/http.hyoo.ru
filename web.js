@@ -3632,6 +3632,64 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_status extends $.$mol_view {
+        status() {
+            return null;
+        }
+        minimal_height() {
+            return 24;
+        }
+        minimal_width() {
+            return 0;
+        }
+        sub() {
+            return [
+                this.message()
+            ];
+        }
+        message() {
+            return "";
+        }
+    }
+    $.$mol_status = $mol_status;
+})($ || ($ = {}));
+//status.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/status/status.view.css", "[mol_status] {\n\ttext-align: center;\n\tpadding: .5rem;\n\tborder-radius: var(--mol_skin_round);\n\tdisplay: block;\n}\n\n[mol_status]:not([mol_view_error=\"Promise\"]) {\n\tbackground: var(--mol_skin_warn);\n\tcolor: var(--mol_skin_warn_text);\n}\n\n[mol_status]:not([mol_view_error=\"Promise\"]):empty {\n\tdisplay: none;\n}\n");
+})($ || ($ = {}));
+//status.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_status extends $.$mol_status {
+            message() {
+                try {
+                    let status = this.status();
+                    if (status)
+                        status.valueOf();
+                    return null;
+                }
+                catch (error) {
+                    if (error instanceof Promise)
+                        $.$mol_fail_hidden(error);
+                    return error.message;
+                }
+            }
+        }
+        $$.$mol_status = $mol_status;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//status.view.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_plugin extends $.$mol_view {
         dom_node(next) {
             const node = next || $.$mol_owning_get(this, $.$mol_view).dom_node();
@@ -6875,6 +6933,11 @@ var $;
                 this.Data()
             ];
         }
+        Response_error(error) {
+            const obj = new this.$.$mol_status();
+            obj.message = () => this.response_error(error);
+            return obj;
+        }
         Theme() {
             const obj = new this.$.$mol_theme_auto();
             return obj;
@@ -6984,12 +7047,15 @@ var $;
             obj.Content = () => this.Response_body_output();
             return obj;
         }
-        Response() {
-            const obj = new this.$.$mol_scroll();
-            obj.sub = () => [
+        response_output() {
+            return [
                 this.Response_headers(),
                 this.Response_body()
             ];
+        }
+        Response() {
+            const obj = new this.$.$mol_scroll();
+            obj.sub = () => this.response_output();
             return obj;
         }
         Data() {
@@ -7000,7 +7066,13 @@ var $;
             ];
             return obj;
         }
+        response_error(error) {
+            return "";
+        }
     }
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_http.prototype, "Response_error", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_http.prototype, "Theme", null);
@@ -7097,6 +7169,21 @@ var $;
                     headers: this.request_headers_dict(),
                     body: body || undefined,
                 });
+            }
+            response_output() {
+                try {
+                    this.response();
+                    return super.response_output();
+                }
+                catch (error) {
+                    if ('then' in error)
+                        $.$mol_fail_hidden(error);
+                    return [this.Response_error(error)];
+                }
+            }
+            response_error(error) {
+                var _a;
+                return (_a = error.message) !== null && _a !== void 0 ? _a : error;
             }
             response_headers() {
                 let lines = [];
