@@ -157,13 +157,18 @@ $mol_string $mol_view
 	enabled true
 	minimal_height 40
 	autocomplete false
+	selection?val /number
+	auto /
+		<= selection_watcher null
 	field *
 		^
 		disabled <= disabled false
 		value <= value_changed?val <=> value?val \
-		placeholder <= hint \
+		placeholder <= hint \ 
 		spellcheck <= spellcheck false
 		autocomplete <= autocomplete_native \
+		selectionEnd <= selection_end 0
+		selectionStart <= selection_start 0
 	attr *
 		^
 		maxlength <= length_max Infinity
@@ -206,7 +211,7 @@ $mol_check_expand $mol_check
 
 $mol_paragraph $mol_view
 	line_height 24
-	letter_width 8
+	letter_width 7
 	width_limit Infinity
 	sub / <= title
 
@@ -405,11 +410,13 @@ $mol_textarea $mol_view
 			hint <= hint \
 			enabled <= enabled true
 			length_max <= length_max Infinity
+			selection?val <=> selection?val /number
 		<= View $mol_text_code
 			text <= value
 			render_visible_only false
 			row_numb!index <= row_numb!index 0
 			sidebar_showed <= sidebar_showed
+			highlight <= highlight \
 
 $mol_labeler $mol_list
 	rows /
@@ -456,39 +463,3 @@ $hyoo_http $mol_page
 						value <= response_body \
 	Response_error!error $mol_status
 		message <= response_error!error \
-
-$mol_view_tree_test_attributes_super $mol_view
-	some *
-		a 0
-		b 2
-
-$mol_view_tree_test_attributes $mol_view_tree_test_attributes_super
-	some *
-		^
-		a 1
-
-$mol_view_tree_test_binding $mol_view
-	value?val <=> task_title_new?val \123
-	enabled <= head_complete_enabled false
-
-$mol_view_tree_test_binding_right $mol_view
-	Test $mol_view_tree_test_binding_right_test
-		width?v => outer_width?v
-
-$mol_view_tree_test_binding_right_test $mol_view
-	width?val 0
-
-$mol_view_tree_test_simple $mol_view
-	some 1
-	bool true
-	str \test
-	arr /
-	arr_string /string
-
-$mol_view_tree_test_attributes_subcomponent $mol_view
-	- Comment
-	Page!index $mol_view_tree_test_attributes_subcomponent_page
-		Sub <= page!index null
-
-$mol_view_tree_test_attributes_subcomponent_page $mol_view
-	Sub null
