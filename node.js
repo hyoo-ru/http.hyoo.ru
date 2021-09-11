@@ -866,6 +866,7 @@ var $;
             if (process[output].isTTY) {
                 str = $node.colorette[color + 'Bright'](str);
             }
+            ;
             this.console[level](str);
             const self = this;
             return () => self.console.groupEnd();
@@ -2430,7 +2431,7 @@ var $;
                     return null;
                 return (child instanceof $mol_view)
                     ? child.dom_node()
-                    : child instanceof Node
+                    : child instanceof $.$mol_dom_context.Node
                         ? child
                         : String(child);
             });
@@ -4694,7 +4695,7 @@ var $;
         '@': {
             mol_link_current: {
                 'true': {
-                    color: $.$mol_theme.text,
+                    color: $.$mol_theme.focus,
                     textShadow: '0 0',
                 }
             }
@@ -5766,7 +5767,7 @@ var $;
                         color: hsla(330, 70, 50, 1),
                     },
                     'code-global': {
-                        color: hsla(210, 80, 50, 1),
+                        color: hsla(30, 80, 50, 1),
                     },
                     'code-decorator': {
                         color: hsla(180, 40, 50, 1),
@@ -5784,7 +5785,7 @@ var $;
                         color: hsla(270, 60, 50, 1),
                     },
                     'code-link': {
-                        color: hsla(240, 60, 50, 1),
+                        color: hsla(210, 60, 50, 1),
                     },
                     'code-comment-inline': {
                         opacity: .5,
