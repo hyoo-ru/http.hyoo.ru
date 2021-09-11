@@ -38,7 +38,7 @@ namespace $.$$ {
 			try {
 				this.response()
 				return super.response_output()
-			} catch( error ) {
+			} catch( error: any ) {
 				if( 'then' in error ) $mol_fail_hidden( error )
 				return [ this.Response_error( error ) ]
 			}
