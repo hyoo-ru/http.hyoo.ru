@@ -5,6 +5,6 @@
 	"$hyoo_http_response_headers_title": "Заголовки ответа",
 	"$hyoo_http_title": "HTTP запросы онлайн",
 	"$hyoo_http_uri_hint": "URI",
-	"$mol_lights_toggle_hint": "Переключатель света",
+	"$mol_lights_toggle_hint": "Переключить освещение",
 	"$mol_link_source_hint": "Исходные коды"
 }
