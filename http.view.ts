@@ -39,7 +39,7 @@ namespace $.$$ {
 				this.response()
 				return super.response_output()
 			} catch( error: any ) {
-				if( 'then' in error ) $mol_fail_hidden( error )
+				if( error instanceof Promise ) $mol_fail_hidden( error )
 				return [ this.Response_error( error ) ]
 			}
 		}
