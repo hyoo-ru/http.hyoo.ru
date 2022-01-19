@@ -6377,7 +6377,7 @@ var $;
                     return super.response_output();
                 }
                 catch (error) {
-                    if ('then' in error)
+                    if (error instanceof Promise)
                         $mol_fail_hidden(error);
                     return [this.Response_error(error)];
                 }
