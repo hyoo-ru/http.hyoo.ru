@@ -1730,30 +1730,6 @@ var $;
 //mol/func/name/name.ts
 ;
 "use strict";
-var $;
-(function ($) {
-    function $mol_deprecated(message) {
-        return (host, field, descr) => {
-            const value = descr.value;
-            let warned = false;
-            descr.value = function $mol_deprecated_wrapper(...args) {
-                if (!warned) {
-                    $$.$mol_log3_warn({
-                        place: `${host.constructor.name}::${field}`,
-                        message: `Deprecated`,
-                        hint: message,
-                    });
-                    warned = true;
-                }
-                return value.call(this, ...args);
-            };
-        };
-    }
-    $.$mol_deprecated = $mol_deprecated;
-})($ || ($ = {}));
-//mol/deprecated/deprecated.ts
-;
-"use strict";
 //mol/type/keys/extract/extract.ts
 ;
 "use strict";
@@ -2016,9 +1992,6 @@ var $;
         event() {
             return {};
         }
-        event_async() {
-            return {};
-        }
         plugins() {
             return [];
         }
@@ -2088,9 +2061,6 @@ var $;
     __decorate([
         $mol_memo.method
     ], $mol_view.prototype, "view_names", null);
-    __decorate([
-        $mol_deprecated('Use $mol_view::event instead.')
-    ], $mol_view.prototype, "event_async", null);
     __decorate([
         $mol_mem_key
     ], $mol_view, "Root", null);
@@ -2993,6 +2963,30 @@ var $;
     $.$mol_log3_stack = [];
 })($ || ($ = {}));
 //mol/log3/log3.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_deprecated(message) {
+        return (host, field, descr) => {
+            const value = descr.value;
+            let warned = false;
+            descr.value = function $mol_deprecated_wrapper(...args) {
+                if (!warned) {
+                    $$.$mol_log3_warn({
+                        place: `${host.constructor.name}::${field}`,
+                        message: `Deprecated`,
+                        hint: message,
+                    });
+                    warned = true;
+                }
+                return value.call(this, ...args);
+            };
+        };
+    }
+    $.$mol_deprecated = $mol_deprecated;
+})($ || ($ = {}));
+//mol/deprecated/deprecated.ts
 ;
 "use strict";
 var $;
@@ -4174,7 +4168,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/button/typed/typed.view.css", "[mol_button_typed] {\n\talign-content: center;\n\talign-items: center;\n\tpadding: var(--mol_gap_text);\n\tborder-radius: var(--mol_gap_round);\n\tgap: var(--mol_gap_space);\n}\n\n[mol_button_typed][disabled] {\n\tcolor: var(--mol_theme_text);\n\tpointer-events: none;\n}\n\n[mol_button_typed]:hover ,\n[mol_button_typed]:focus {\n\tcursor: pointer;\n\tbackground-color: var(--mol_theme_hover);\n}\n");
+    $mol_style_attach("mol/button/typed/typed.view.css", "[mol_button_typed] {\n\tjustify-content: center;\n\talign-content: center;\n\talign-items: center;\n\tpadding: var(--mol_gap_text);\n\tborder-radius: var(--mol_gap_round);\n\tgap: var(--mol_gap_space);\n}\n\n[mol_button_typed][disabled] {\n\tcolor: var(--mol_theme_text);\n\tpointer-events: none;\n}\n\n[mol_button_typed]:hover ,\n[mol_button_typed]:focus {\n\tcursor: pointer;\n\tbackground-color: var(--mol_theme_hover);\n}\n");
 })($ || ($ = {}));
 //mol/button/typed/-css/typed.view.css.ts
 ;
@@ -9551,20 +9545,6 @@ var $;
 //mol/func/name/name.test.ts
 ;
 "use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
-//mol/log3/log3.test.ts
-;
-"use strict";
 //mol/type/keys/extract/extract.test.ts
 ;
 "use strict";
@@ -10004,6 +9984,20 @@ var $;
     });
 })($ || ($ = {}));
 //mol/compare/array/array.test.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+//mol/log3/log3.test.ts
 ;
 "use strict";
 var $;
