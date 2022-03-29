@@ -1104,9 +1104,6 @@ var $;
                 return;
             return this.cache;
         }
-        persistent() {
-            return this instanceof $mol_wire_fiber_persist;
-        }
         field() {
             return this.task.name + '()';
         }
@@ -1118,23 +1115,6 @@ var $;
             this.pop();
             this.pub_from = this.sub_from = args.length;
             this[Symbol.toStringTag] = id;
-        }
-        destructor() {
-            super.destructor();
-            const prev = this.cache;
-            if ($mol_owning_check(this, prev)) {
-                prev.destructor();
-            }
-            if (this instanceof $mol_wire_fiber_persist) {
-                if (this.pub_from === 0) {
-                    ;
-                    (this.host ?? this.task)[this.field()] = null;
-                }
-                else {
-                    ;
-                    (this.host ?? this.task)[this.field()].delete(this[Symbol.toStringTag]);
-                }
-            }
         }
         plan() {
             $mol_wire_fiber.planning.push(this);
@@ -1167,15 +1147,6 @@ var $;
                 this.plan();
             else
                 super.emit(quant);
-        }
-        commit() {
-            if (this instanceof $mol_wire_fiber_persist)
-                return;
-            super.commit();
-            if (this.host instanceof $mol_wire_fiber) {
-                this.host.put(this.cache);
-            }
-            this.destructor();
         }
         refresh() {
             if (this.cursor === $mol_wire_cursor.fresh)
@@ -1319,6 +1290,10 @@ var $;
                 return new $mol_wire_fiber_temp(`${host?.[Symbol.toStringTag] ?? host}.${task.name}(#)`, task, host, ...args);
             };
         }
+        commit() {
+            super.commit();
+            this.destructor();
+        }
     }
     $.$mol_wire_fiber_temp = $mol_wire_fiber_temp;
     class $mol_wire_fiber_persist extends $mol_wire_fiber {
@@ -1355,7 +1330,23 @@ var $;
             }
         }
         recall(...args) {
-            return this.task.call(this.host, ...args);
+            return this.put(this.task.call(this.host, ...args));
+        }
+        commit() { }
+        destructor() {
+            super.destructor();
+            const prev = this.cache;
+            if ($mol_owning_check(this, prev)) {
+                prev.destructor();
+            }
+            if (this.pub_from === 0) {
+                ;
+                (this.host ?? this.task)[this.field()] = null;
+            }
+            else {
+                ;
+                (this.host ?? this.task)[this.field()].delete(this[Symbol.toStringTag]);
+            }
         }
     }
     __decorate([
@@ -2268,6 +2259,36 @@ var $;
     $.$mol_style_sheet = $mol_style_sheet;
 })($ || ($ = {}));
 //mol/style/sheet/sheet.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_plugin extends $mol_view {
+        dom_node(next) {
+            const node = next || $mol_owning_get(this).host.dom_node();
+            $mol_dom_render_attributes(node, this.attr_static());
+            const events = $mol_wire_async(this.event());
+            for (let event_name in events) {
+                node.addEventListener(event_name, events[event_name], { passive: false });
+            }
+            return node;
+        }
+        attr_static() {
+            return {};
+        }
+        event() {
+            return {};
+        }
+        render() {
+            this.dom_node_actual();
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_plugin.prototype, "dom_node", null);
+    $.$mol_plugin = $mol_plugin;
+})($ || ($ = {}));
+//mol/plugin/plugin.ts
 ;
 "use strict";
 var $;
@@ -3286,36 +3307,6 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //mol/status/status.view.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_plugin extends $mol_view {
-        dom_node(next) {
-            const node = next || $mol_owning_get(this).host.dom_node();
-            $mol_dom_render_attributes(node, this.attr_static());
-            const events = $mol_wire_async(this.event());
-            for (let event_name in events) {
-                node.addEventListener(event_name, events[event_name], { passive: false });
-            }
-            return node;
-        }
-        attr_static() {
-            return {};
-        }
-        event() {
-            return {};
-        }
-        render() {
-            this.dom_node_actual();
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_plugin.prototype, "dom_node", null);
-    $.$mol_plugin = $mol_plugin;
-})($ || ($ = {}));
-//mol/plugin/plugin.ts
 ;
 "use strict";
 var $;
@@ -5819,518 +5810,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_textarea extends $mol_view {
-        attr() {
-            return {
-                ...super.attr(),
-                mol_textarea_clickable: this.clickable(),
-                mol_textarea_sidebar_showed: this.sidebar_showed()
-            };
-        }
-        event() {
-            return {
-                keydown: (event) => this.press(event),
-                pointermove: (event) => this.hover(event)
-            };
-        }
-        sub() {
-            return [
-                this.Edit(),
-                this.View()
-            ];
-        }
-        clickable(val) {
-            if (val !== undefined)
-                return val;
-            return false;
-        }
-        sidebar_showed() {
-            return false;
-        }
-        press(event) {
-            if (event !== undefined)
-                return event;
-            return null;
-        }
-        hover(event) {
-            if (event !== undefined)
-                return event;
-            return null;
-        }
-        value(val) {
-            if (val !== undefined)
-                return val;
-            return "";
-        }
-        hint() {
-            return " ";
-        }
-        enabled() {
-            return true;
-        }
-        length_max() {
-            return Infinity;
-        }
-        selection(val) {
-            if (val !== undefined)
-                return val;
-            return [];
-        }
-        Edit() {
-            const obj = new this.$.$mol_textarea_edit();
-            obj.value = (val) => this.value(val);
-            obj.hint = () => this.hint();
-            obj.enabled = () => this.enabled();
-            obj.length_max = () => this.length_max();
-            obj.selection = (val) => this.selection(val);
-            return obj;
-        }
-        row_numb(index) {
-            return 0;
-        }
-        highlight() {
-            return "";
-        }
-        View() {
-            const obj = new this.$.$mol_text_code();
-            obj.text = () => this.value();
-            obj.render_visible_only = () => false;
-            obj.row_numb = (index) => this.row_numb(index);
-            obj.sidebar_showed = () => this.sidebar_showed();
-            obj.highlight = () => this.highlight();
-            return obj;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "clickable", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "press", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "hover", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "value", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "selection", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "Edit", null);
-    __decorate([
-        $mol_mem
-    ], $mol_textarea.prototype, "View", null);
-    $.$mol_textarea = $mol_textarea;
-    class $mol_textarea_edit extends $mol_string {
-        dom_name() {
-            return "textarea";
-        }
-        field() {
-            return {
-                ...super.field(),
-                scrollTop: 0
-            };
-        }
-    }
-    $.$mol_textarea_edit = $mol_textarea_edit;
-})($ || ($ = {}));
-//mol/textarea/-view.tree/textarea.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tdisplay: flex;\n\tflex-direction: column;\n\tposition: relative;\n\tz-index: 0;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_textarea_view] {\n\tpointer-events: none;\n\tz-index: 1;\n\twhite-space: inherit;\n}\n[mol_textarea_clickable] > [mol_textarea_view] {\n\tpointer-events: all;\n}\n\n[mol_textarea_edit] {\n\tfont-family: monospace;\n\tz-index: -1 !important;\n\tpadding: var(--mol_gap_text);\n\tposition: absolute;\n\tleft: 0;\n\ttop: 0;\n\twidth: 100%;\n\theight: 100%;\n\tcolor: transparent;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\ttab-size: 4;\n\toverflow-anchor: none;\n}\n\n[mol_textarea_edit]:focus {\n\tcolor: transparent;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 3rem;\n\twidth: calc( 100% - 3rem );\n}\n");
-})($ || ($ = {}));
-//mol/textarea/-css/textarea.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_textarea extends $.$mol_textarea {
-            indent_inc() {
-                document.execCommand('insertText', false, '\t');
-            }
-            indent_dec() {
-            }
-            hover(event) {
-                this.clickable(event.ctrlKey);
-            }
-            press(event) {
-                switch (event.keyCode) {
-                    case $mol_keyboard_code.tab:
-                        this.indent_inc();
-                        break;
-                    case event.shiftKey && $mol_keyboard_code.tab:
-                        this.indent_dec();
-                        break;
-                    default: return;
-                }
-                event.preventDefault();
-            }
-            row_numb(index) {
-                return index;
-            }
-        }
-        $$.$mol_textarea = $mol_textarea;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//mol/textarea/textarea.view.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_labeler extends $mol_list {
-        rows() {
-            return [
-                this.Label(),
-                this.Content()
-            ];
-        }
-        label() {
-            return [
-                this.title()
-            ];
-        }
-        Label() {
-            const obj = new this.$.$mol_view();
-            obj.minimal_height = () => 16;
-            obj.sub = () => this.label();
-            return obj;
-        }
-        content() {
-            return [];
-        }
-        Content() {
-            const obj = new this.$.$mol_view();
-            obj.minimal_height = () => 24;
-            obj.sub = () => this.content();
-            return obj;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_labeler.prototype, "Label", null);
-    __decorate([
-        $mol_mem
-    ], $mol_labeler.prototype, "Content", null);
-    $.$mol_labeler = $mol_labeler;
-})($ || ($ = {}));
-//mol/labeler/-view.tree/labeler.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tcolor: var(--mol_theme_shade);\n\tline-height: 1rem;\n\tz-index: 1;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n}\n");
-})($ || ($ = {}));
-//mol/labeler/-css/labeler.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $hyoo_http extends $mol_page {
-        title() {
-            return this.$.$mol_locale.text('$hyoo_http_title');
-        }
-        plugins() {
-            return [
-                this.Theme()
-            ];
-        }
-        tools() {
-            return [
-                this.Lights(),
-                this.Source_link()
-            ];
-        }
-        body() {
-            return [
-                this.Uri_input(),
-                this.Data()
-            ];
-        }
-        Response_error(error) {
-            const obj = new this.$.$mol_status();
-            obj.message = () => this.response_error(error);
-            return obj;
-        }
-        Theme() {
-            const obj = new this.$.$mol_theme_auto();
-            return obj;
-        }
-        Lights() {
-            const obj = new this.$.$mol_lights_toggle();
-            return obj;
-        }
-        Source_link() {
-            const obj = new this.$.$mol_link_source();
-            obj.uri = () => "https://github.com/hyoo-ru/http.hyoo.ru";
-            return obj;
-        }
-        uri(val) {
-            if (val !== undefined)
-                return val;
-            return "";
-        }
-        uri_hint() {
-            return this.$.$mol_locale.text('$hyoo_http_uri_hint');
-        }
-        Uri_input() {
-            const obj = new this.$.$mol_string();
-            obj.value = (val) => this.uri(val);
-            obj.hint = () => this.uri_hint();
-            return obj;
-        }
-        request_headers_title() {
-            return this.$.$mol_locale.text('$hyoo_http_request_headers_title');
-        }
-        request_headers(val) {
-            if (val !== undefined)
-                return val;
-            return "";
-        }
-        Request_headers_input() {
-            const obj = new this.$.$mol_textarea();
-            obj.value = (val) => this.request_headers(val);
-            return obj;
-        }
-        Request_headers() {
-            const obj = new this.$.$mol_labeler();
-            obj.title = () => this.request_headers_title();
-            obj.Content = () => this.Request_headers_input();
-            return obj;
-        }
-        request_body_title() {
-            return this.$.$mol_locale.text('$hyoo_http_request_body_title');
-        }
-        request_body(val) {
-            if (val !== undefined)
-                return val;
-            return "";
-        }
-        Request_body_input() {
-            const obj = new this.$.$mol_textarea();
-            obj.value = (val) => this.request_body(val);
-            return obj;
-        }
-        Request_body() {
-            const obj = new this.$.$mol_labeler();
-            obj.title = () => this.request_body_title();
-            obj.Content = () => this.Request_body_input();
-            return obj;
-        }
-        Request() {
-            const obj = new this.$.$mol_scroll();
-            obj.sub = () => [
-                this.Request_headers(),
-                this.Request_body()
-            ];
-            return obj;
-        }
-        response_headers_title() {
-            return this.$.$mol_locale.text('$hyoo_http_response_headers_title');
-        }
-        response_headers() {
-            return "";
-        }
-        Response_headers_output() {
-            const obj = new this.$.$mol_textarea();
-            obj.enabled = () => false;
-            obj.value = () => this.response_headers();
-            return obj;
-        }
-        Response_headers() {
-            const obj = new this.$.$mol_labeler();
-            obj.title = () => this.response_headers_title();
-            obj.Content = () => this.Response_headers_output();
-            return obj;
-        }
-        response_body_title() {
-            return this.$.$mol_locale.text('$hyoo_http_response_body_title');
-        }
-        response_body() {
-            return "";
-        }
-        Response_body_output() {
-            const obj = new this.$.$mol_textarea();
-            obj.enabled = () => false;
-            obj.value = () => this.response_body();
-            return obj;
-        }
-        Response_body() {
-            const obj = new this.$.$mol_labeler();
-            obj.title = () => this.response_body_title();
-            obj.Content = () => this.Response_body_output();
-            return obj;
-        }
-        response_output() {
-            return [
-                this.Response_headers(),
-                this.Response_body()
-            ];
-        }
-        Response() {
-            const obj = new this.$.$mol_scroll();
-            obj.sub = () => this.response_output();
-            return obj;
-        }
-        Data() {
-            const obj = new this.$.$mol_view();
-            obj.sub = () => [
-                this.Request(),
-                this.Response()
-            ];
-            return obj;
-        }
-        response_error(error) {
-            return "";
-        }
-    }
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_http.prototype, "Response_error", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Theme", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Lights", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Source_link", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "uri", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Uri_input", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "request_headers", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Request_headers_input", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Request_headers", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "request_body", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Request_body_input", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Request_body", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Request", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Response_headers_output", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Response_headers", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Response_body_output", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Response_body", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Response", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_http.prototype, "Data", null);
-    $.$hyoo_http = $hyoo_http;
-})($ || ($ = {}));
-//hyoo/http/-view.tree/http.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_uri_input] {\n\tflex: 0 0 auto;\n\tmargin: .75rem;\n}\n\n[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n}\n\n[hyoo_http_request] > * ,\n[hyoo_http_response] > * {\n\tmargin: .75rem;\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n}\n\n");
-})($ || ($ = {}));
-//hyoo/http/-css/http.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $hyoo_http extends $.$hyoo_http {
-            uri(next) {
-                return this.$.$mol_state_arg.value('uri', next) || super.uri();
-            }
-            request_headers(next) {
-                return this.$.$mol_state_arg.value('headers', next) || '';
-            }
-            request_headers_dict() {
-                const dict = {};
-                const lines = this.request_headers().split(/[\r\n]/g).filter(line => line.trim());
-                for (const line of lines) {
-                    const pair = line.split(': ');
-                    dict[pair[0]] = pair[1];
-                }
-                return dict;
-            }
-            request_body(next) {
-                return this.$.$mol_state_arg.value('body', next) || '';
-            }
-            response() {
-                const body = this.request_body();
-                return this.$.$mol_fetch.response(this.uri(), {
-                    method: body ? 'put' : 'get',
-                    headers: this.request_headers_dict(),
-                    body: body || undefined,
-                });
-            }
-            response_output() {
-                try {
-                    this.response();
-                    return super.response_output();
-                }
-                catch (error) {
-                    if (error instanceof Promise)
-                        $mol_fail_hidden(error);
-                    return [this.Response_error(error)];
-                }
-            }
-            response_error(error) {
-                return error.message ?? error;
-            }
-            response_headers() {
-                let lines = [];
-                for (const [name, value] of this.response().headers()) {
-                    lines.push(`${name}: ${value}`);
-                }
-                return lines.join('\n');
-            }
-            response_body() {
-                return this.response().text();
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $hyoo_http.prototype, "response", null);
-        __decorate([
-            $mol_mem
-        ], $hyoo_http.prototype, "response_headers", null);
-        __decorate([
-            $mol_mem
-        ], $hyoo_http.prototype, "response_body", null);
-        $$.$hyoo_http = $hyoo_http;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//hyoo/http/http.view.ts
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_float extends $mol_view {
         style() {
             return {
@@ -7453,5 +6932,517 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //mol/text/text.view.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_textarea extends $mol_view {
+        attr() {
+            return {
+                ...super.attr(),
+                mol_textarea_clickable: this.clickable(),
+                mol_textarea_sidebar_showed: this.sidebar_showed()
+            };
+        }
+        event() {
+            return {
+                keydown: (event) => this.press(event),
+                pointermove: (event) => this.hover(event)
+            };
+        }
+        sub() {
+            return [
+                this.Edit(),
+                this.View()
+            ];
+        }
+        clickable(val) {
+            if (val !== undefined)
+                return val;
+            return false;
+        }
+        sidebar_showed() {
+            return false;
+        }
+        press(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        hover(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        value(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        hint() {
+            return " ";
+        }
+        enabled() {
+            return true;
+        }
+        length_max() {
+            return Infinity;
+        }
+        selection(val) {
+            if (val !== undefined)
+                return val;
+            return [];
+        }
+        Edit() {
+            const obj = new this.$.$mol_textarea_edit();
+            obj.value = (val) => this.value(val);
+            obj.hint = () => this.hint();
+            obj.enabled = () => this.enabled();
+            obj.length_max = () => this.length_max();
+            obj.selection = (val) => this.selection(val);
+            return obj;
+        }
+        row_numb(index) {
+            return 0;
+        }
+        highlight() {
+            return "";
+        }
+        View() {
+            const obj = new this.$.$mol_text_code();
+            obj.text = () => this.value();
+            obj.render_visible_only = () => false;
+            obj.row_numb = (index) => this.row_numb(index);
+            obj.sidebar_showed = () => this.sidebar_showed();
+            obj.highlight = () => this.highlight();
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "clickable", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "press", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "hover", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "value", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "selection", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "Edit", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "View", null);
+    $.$mol_textarea = $mol_textarea;
+    class $mol_textarea_edit extends $mol_string {
+        dom_name() {
+            return "textarea";
+        }
+        field() {
+            return {
+                ...super.field(),
+                scrollTop: 0
+            };
+        }
+    }
+    $.$mol_textarea_edit = $mol_textarea_edit;
+})($ || ($ = {}));
+//mol/textarea/-view.tree/textarea.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/textarea/textarea.view.css", "[mol_textarea] {\n\tflex: 1 0 auto;\n\tdisplay: flex;\n\tflex-direction: column;\n\tposition: relative;\n\tz-index: 0;\n\tvertical-align: top;\n\tmin-height: max-content;\n\twhite-space: pre-wrap;\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_textarea_view] {\n\tpointer-events: none;\n\tz-index: 1;\n\twhite-space: inherit;\n}\n[mol_textarea_clickable] > [mol_textarea_view] {\n\tpointer-events: all;\n}\n\n[mol_textarea_edit] {\n\tfont-family: monospace;\n\tz-index: -1 !important;\n\tpadding: var(--mol_gap_text);\n\tposition: absolute;\n\tleft: 0;\n\ttop: 0;\n\twidth: 100%;\n\theight: 100%;\n\tcolor: transparent;\n\tcaret-color: var(--mol_theme_text);\n\tresize: none;\n\ttext-align: inherit;\n\twhite-space: inherit;\n\tborder-radius: inherit;\n\ttab-size: 4;\n\toverflow-anchor: none;\n}\n\n[mol_textarea_edit]:focus {\n\tcolor: transparent;\n}\n\n[mol_textarea_sidebar_showed] [mol_textarea_edit] {\n\tleft: 3rem;\n\twidth: calc( 100% - 3rem );\n}\n");
+})($ || ($ = {}));
+//mol/textarea/-css/textarea.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_textarea extends $.$mol_textarea {
+            indent_inc() {
+                document.execCommand('insertText', false, '\t');
+            }
+            indent_dec() {
+            }
+            hover(event) {
+                this.clickable(event.ctrlKey);
+            }
+            press(event) {
+                switch (event.keyCode) {
+                    case $mol_keyboard_code.tab:
+                        this.indent_inc();
+                        break;
+                    case event.shiftKey && $mol_keyboard_code.tab:
+                        this.indent_dec();
+                        break;
+                    default: return;
+                }
+                event.preventDefault();
+            }
+            row_numb(index) {
+                return index;
+            }
+        }
+        $$.$mol_textarea = $mol_textarea;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/textarea/textarea.view.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_labeler extends $mol_list {
+        rows() {
+            return [
+                this.Label(),
+                this.Content()
+            ];
+        }
+        label() {
+            return [
+                this.title()
+            ];
+        }
+        Label() {
+            const obj = new this.$.$mol_view();
+            obj.minimal_height = () => 16;
+            obj.sub = () => this.label();
+            return obj;
+        }
+        content() {
+            return [];
+        }
+        Content() {
+            const obj = new this.$.$mol_view();
+            obj.minimal_height = () => 24;
+            obj.sub = () => this.content();
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_labeler.prototype, "Label", null);
+    __decorate([
+        $mol_mem
+    ], $mol_labeler.prototype, "Content", null);
+    $.$mol_labeler = $mol_labeler;
+})($ || ($ = {}));
+//mol/labeler/-view.tree/labeler.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tcolor: var(--mol_theme_shade);\n\tline-height: 1rem;\n\tz-index: 1;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n}\n");
+})($ || ($ = {}));
+//mol/labeler/-css/labeler.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $hyoo_http extends $mol_page {
+        title() {
+            return this.$.$mol_locale.text('$hyoo_http_title');
+        }
+        plugins() {
+            return [
+                this.Theme()
+            ];
+        }
+        tools() {
+            return [
+                this.Lights(),
+                this.Source_link()
+            ];
+        }
+        body() {
+            return [
+                this.Uri_input(),
+                this.Data()
+            ];
+        }
+        Response_error(error) {
+            const obj = new this.$.$mol_status();
+            obj.message = () => this.response_error(error);
+            return obj;
+        }
+        Theme() {
+            const obj = new this.$.$mol_theme_auto();
+            return obj;
+        }
+        Lights() {
+            const obj = new this.$.$mol_lights_toggle();
+            return obj;
+        }
+        Source_link() {
+            const obj = new this.$.$mol_link_source();
+            obj.uri = () => "https://github.com/hyoo-ru/http.hyoo.ru";
+            return obj;
+        }
+        uri(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        uri_hint() {
+            return this.$.$mol_locale.text('$hyoo_http_uri_hint');
+        }
+        Uri_input() {
+            const obj = new this.$.$mol_string();
+            obj.value = (val) => this.uri(val);
+            obj.hint = () => this.uri_hint();
+            return obj;
+        }
+        request_headers_title() {
+            return this.$.$mol_locale.text('$hyoo_http_request_headers_title');
+        }
+        request_headers(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        Request_headers_input() {
+            const obj = new this.$.$mol_textarea();
+            obj.value = (val) => this.request_headers(val);
+            return obj;
+        }
+        Request_headers() {
+            const obj = new this.$.$mol_labeler();
+            obj.title = () => this.request_headers_title();
+            obj.Content = () => this.Request_headers_input();
+            return obj;
+        }
+        request_body_title() {
+            return this.$.$mol_locale.text('$hyoo_http_request_body_title');
+        }
+        request_body(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        Request_body_input() {
+            const obj = new this.$.$mol_textarea();
+            obj.value = (val) => this.request_body(val);
+            return obj;
+        }
+        Request_body() {
+            const obj = new this.$.$mol_labeler();
+            obj.title = () => this.request_body_title();
+            obj.Content = () => this.Request_body_input();
+            return obj;
+        }
+        Request() {
+            const obj = new this.$.$mol_scroll();
+            obj.sub = () => [
+                this.Request_headers(),
+                this.Request_body()
+            ];
+            return obj;
+        }
+        response_headers_title() {
+            return this.$.$mol_locale.text('$hyoo_http_response_headers_title');
+        }
+        response_headers() {
+            return "";
+        }
+        Response_headers_output() {
+            const obj = new this.$.$mol_textarea();
+            obj.enabled = () => false;
+            obj.value = () => this.response_headers();
+            return obj;
+        }
+        Response_headers() {
+            const obj = new this.$.$mol_labeler();
+            obj.title = () => this.response_headers_title();
+            obj.Content = () => this.Response_headers_output();
+            return obj;
+        }
+        response_body_title() {
+            return this.$.$mol_locale.text('$hyoo_http_response_body_title');
+        }
+        response_body() {
+            return "";
+        }
+        Response_body_output() {
+            const obj = new this.$.$mol_textarea();
+            obj.enabled = () => false;
+            obj.value = () => this.response_body();
+            return obj;
+        }
+        Response_body() {
+            const obj = new this.$.$mol_labeler();
+            obj.title = () => this.response_body_title();
+            obj.Content = () => this.Response_body_output();
+            return obj;
+        }
+        response_output() {
+            return [
+                this.Response_headers(),
+                this.Response_body()
+            ];
+        }
+        Response() {
+            const obj = new this.$.$mol_scroll();
+            obj.sub = () => this.response_output();
+            return obj;
+        }
+        Data() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.Request(),
+                this.Response()
+            ];
+            return obj;
+        }
+        response_error(error) {
+            return "";
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_http.prototype, "Response_error", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Theme", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Lights", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Source_link", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "uri", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Uri_input", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "request_headers", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Request_headers_input", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Request_headers", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "request_body", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Request_body_input", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Request_body", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Request", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response_headers_output", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response_headers", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response_body_output", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response_body", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Data", null);
+    $.$hyoo_http = $hyoo_http;
+})($ || ($ = {}));
+//hyoo/http/-view.tree/http.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_uri_input] {\n\tflex: 0 0 auto;\n\tmargin: .75rem;\n}\n\n[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n}\n\n[hyoo_http_request] > * ,\n[hyoo_http_response] > * {\n\tmargin: .75rem;\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n}\n\n");
+})($ || ($ = {}));
+//hyoo/http/-css/http.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $hyoo_http extends $.$hyoo_http {
+            uri(next) {
+                return this.$.$mol_state_arg.value('uri', next) || super.uri();
+            }
+            request_headers(next) {
+                return this.$.$mol_state_arg.value('headers', next) || '';
+            }
+            request_headers_dict() {
+                const dict = {};
+                const lines = this.request_headers().split(/[\r\n]/g).filter(line => line.trim());
+                for (const line of lines) {
+                    const pair = line.split(': ');
+                    dict[pair[0]] = pair[1];
+                }
+                return dict;
+            }
+            request_body(next) {
+                return this.$.$mol_state_arg.value('body', next) || '';
+            }
+            response() {
+                const body = this.request_body();
+                return this.$.$mol_fetch.response(this.uri(), {
+                    method: body ? 'put' : 'get',
+                    headers: this.request_headers_dict(),
+                    body: body || undefined,
+                });
+            }
+            response_output() {
+                try {
+                    this.response();
+                    return super.response_output();
+                }
+                catch (error) {
+                    if (error instanceof Promise)
+                        $mol_fail_hidden(error);
+                    return [this.Response_error(error)];
+                }
+            }
+            response_error(error) {
+                return error.message ?? error;
+            }
+            response_headers() {
+                let lines = [];
+                for (const [name, value] of this.response().headers()) {
+                    lines.push(`${name}: ${value}`);
+                }
+                return lines.join('\n');
+            }
+            response_body() {
+                return this.response().text();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $hyoo_http.prototype, "response", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_http.prototype, "response_headers", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_http.prototype, "response_body", null);
+        $$.$hyoo_http = $hyoo_http;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//hyoo/http/http.view.ts
 
 //# sourceMappingURL=web.js.map

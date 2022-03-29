@@ -334,17 +334,14 @@ declare namespace $ {
         cache: Result | Error | Promise<Result | Error>;
         get args(): Args;
         result(): Result | undefined;
-        persistent(): boolean;
         field(): string;
         constructor(id: string, task: (this: Host, ...args: Args) => Result, host?: Host | undefined, ...args: Args);
-        destructor(): void;
         plan(): void;
         reap(): void;
         toString(): any;
         toJSON(): any;
         get $(): any;
         emit(quant?: $mol_wire_cursor): void;
-        commit(): void;
         refresh(): void;
         put(next: Result | Error | Promise<Result | Error>): Result | Error | Promise<Result | Error>;
         sync(): Awaited<Result>;
@@ -352,10 +349,13 @@ declare namespace $ {
     }
     class $mol_wire_fiber_temp<Host, Args extends readonly unknown[], Result> extends $mol_wire_fiber<Host, Args, Result> {
         static getter<Host, Args extends readonly unknown[], Result>(task: (this: Host, ...args: Args) => Result): (host: Host, args: Args) => $mol_wire_fiber_temp<Host, [...Args], Result>;
+        commit(): void;
     }
     class $mol_wire_fiber_persist<Host, Args extends readonly unknown[], Result> extends $mol_wire_fiber<Host, Args, Result> {
         static getter<Host, Args extends readonly unknown[], Result>(task: (this: Host, ...args: Args) => Result, keys: number): (host: Host, args: Args) => $mol_wire_fiber_persist<Host, [...Args], Result>;
-        recall(...args: Args): Result;
+        recall(...args: Args): Error | Result | Promise<Error | Result>;
+        commit(): void;
+        destructor(): void;
     }
 }
 
@@ -720,6 +720,19 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_plugin extends $mol_view {
+        dom_node(next?: Element): Element;
+        attr_static(): {
+            [key: string]: string | number | boolean;
+        };
+        event(): {
+            [key: string]: (event: Event) => void;
+        };
+        render(): void;
+    }
+}
+
+declare namespace $ {
     function $mol_style_define<Component extends $mol_view, Config extends $mol_style_guard<Component, Config>>(Component: new () => Component, config: Config): HTMLStyleElement | null;
 }
 
@@ -961,19 +974,6 @@ declare namespace $ {
 declare namespace $.$$ {
     class $mol_status extends $.$mol_status {
         message(): any;
-    }
-}
-
-declare namespace $ {
-    class $mol_plugin extends $mol_view {
-        dom_node(next?: Element): Element;
-        attr_static(): {
-            [key: string]: string | number | boolean;
-        };
-        event(): {
-            [key: string]: (event: Event) => void;
-        };
-        render(): void;
     }
 }
 
@@ -1912,126 +1912,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_textarea extends $mol_view {
-        attr(): {
-            mol_textarea_clickable: boolean;
-            mol_textarea_sidebar_showed: boolean;
-        };
-        event(): {
-            keydown: (event?: any) => any;
-            pointermove: (event?: any) => any;
-        };
-        sub(): readonly any[];
-        clickable(val?: any): boolean;
-        sidebar_showed(): boolean;
-        press(event?: any): any;
-        hover(event?: any): any;
-        value(val?: any): string;
-        hint(): string;
-        enabled(): boolean;
-        length_max(): number;
-        selection(val?: any): readonly number[];
-        Edit(): $mol_textarea_edit;
-        row_numb(index: any): number;
-        highlight(): string;
-        View(): $$.$mol_text_code;
-    }
-    class $mol_textarea_edit extends $mol_string {
-        dom_name(): string;
-        field(): {
-            scrollTop: number;
-            disabled: boolean;
-            value: string;
-            placeholder: string;
-            spellcheck: boolean;
-            autocomplete: string;
-            selectionEnd: number;
-            selectionStart: number;
-        };
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_textarea extends $.$mol_textarea {
-        indent_inc(): void;
-        indent_dec(): void;
-        hover(event: PointerEvent): void;
-        press(event: KeyboardEvent): void;
-        row_numb(index: number): number;
-    }
-}
-
-declare namespace $ {
-    class $mol_labeler extends $mol_list {
-        rows(): readonly any[];
-        label(): readonly $mol_view_content[];
-        Label(): $mol_view;
-        content(): readonly any[];
-        Content(): $mol_view;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $hyoo_http extends $mol_page {
-        title(): string;
-        plugins(): readonly any[];
-        tools(): readonly any[];
-        body(): readonly any[];
-        Response_error(error: any): $$.$mol_status;
-        Theme(): $$.$mol_theme_auto;
-        Lights(): $$.$mol_lights_toggle;
-        Source_link(): $mol_link_source;
-        uri(val?: any): string;
-        uri_hint(): string;
-        Uri_input(): $$.$mol_string;
-        request_headers_title(): string;
-        request_headers(val?: any): string;
-        Request_headers_input(): $$.$mol_textarea;
-        Request_headers(): $mol_labeler;
-        request_body_title(): string;
-        request_body(val?: any): string;
-        Request_body_input(): $$.$mol_textarea;
-        Request_body(): $mol_labeler;
-        Request(): $$.$mol_scroll;
-        response_headers_title(): string;
-        response_headers(): string;
-        Response_headers_output(): $$.$mol_textarea;
-        Response_headers(): $mol_labeler;
-        response_body_title(): string;
-        response_body(): string;
-        Response_body_output(): $$.$mol_textarea;
-        Response_body(): $mol_labeler;
-        response_output(): readonly any[];
-        Response(): $$.$mol_scroll;
-        Data(): $mol_view;
-        response_error(error: any): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $hyoo_http extends $.$hyoo_http {
-        uri(next?: string): string;
-        request_headers(next?: string): string;
-        request_headers_dict(): Record<string, string>;
-        request_body(next?: string): string;
-        response(): $mol_fetch_response;
-        response_output(): readonly any[];
-        response_error(error: Error): string;
-        response_headers(): string;
-        response_body(): string;
-    }
-}
-
-declare namespace $ {
     class $mol_float extends $mol_view {
         style(): {
             minHeight: string;
@@ -2347,6 +2227,126 @@ declare namespace $.$$ {
         text2spans(prefix: string, text: string): $mol_view[];
         code2spans(prefix: string, text: string): $mol_view[];
         block_content(indexBlock: number): ($mol_view | string)[];
+    }
+}
+
+declare namespace $ {
+    class $mol_textarea extends $mol_view {
+        attr(): {
+            mol_textarea_clickable: boolean;
+            mol_textarea_sidebar_showed: boolean;
+        };
+        event(): {
+            keydown: (event?: any) => any;
+            pointermove: (event?: any) => any;
+        };
+        sub(): readonly any[];
+        clickable(val?: any): boolean;
+        sidebar_showed(): boolean;
+        press(event?: any): any;
+        hover(event?: any): any;
+        value(val?: any): string;
+        hint(): string;
+        enabled(): boolean;
+        length_max(): number;
+        selection(val?: any): readonly number[];
+        Edit(): $mol_textarea_edit;
+        row_numb(index: any): number;
+        highlight(): string;
+        View(): $$.$mol_text_code;
+    }
+    class $mol_textarea_edit extends $mol_string {
+        dom_name(): string;
+        field(): {
+            scrollTop: number;
+            disabled: boolean;
+            value: string;
+            placeholder: string;
+            spellcheck: boolean;
+            autocomplete: string;
+            selectionEnd: number;
+            selectionStart: number;
+        };
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_textarea extends $.$mol_textarea {
+        indent_inc(): void;
+        indent_dec(): void;
+        hover(event: PointerEvent): void;
+        press(event: KeyboardEvent): void;
+        row_numb(index: number): number;
+    }
+}
+
+declare namespace $ {
+    class $mol_labeler extends $mol_list {
+        rows(): readonly any[];
+        label(): readonly $mol_view_content[];
+        Label(): $mol_view;
+        content(): readonly any[];
+        Content(): $mol_view;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $hyoo_http extends $mol_page {
+        title(): string;
+        plugins(): readonly any[];
+        tools(): readonly any[];
+        body(): readonly any[];
+        Response_error(error: any): $$.$mol_status;
+        Theme(): $$.$mol_theme_auto;
+        Lights(): $$.$mol_lights_toggle;
+        Source_link(): $mol_link_source;
+        uri(val?: any): string;
+        uri_hint(): string;
+        Uri_input(): $$.$mol_string;
+        request_headers_title(): string;
+        request_headers(val?: any): string;
+        Request_headers_input(): $$.$mol_textarea;
+        Request_headers(): $mol_labeler;
+        request_body_title(): string;
+        request_body(val?: any): string;
+        Request_body_input(): $$.$mol_textarea;
+        Request_body(): $mol_labeler;
+        Request(): $$.$mol_scroll;
+        response_headers_title(): string;
+        response_headers(): string;
+        Response_headers_output(): $$.$mol_textarea;
+        Response_headers(): $mol_labeler;
+        response_body_title(): string;
+        response_body(): string;
+        Response_body_output(): $$.$mol_textarea;
+        Response_body(): $mol_labeler;
+        response_output(): readonly any[];
+        Response(): $$.$mol_scroll;
+        Data(): $mol_view;
+        response_error(error: any): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $hyoo_http extends $.$hyoo_http {
+        uri(next?: string): string;
+        request_headers(next?: string): string;
+        request_headers_dict(): Record<string, string>;
+        request_body(next?: string): string;
+        response(): $mol_fetch_response;
+        response_output(): readonly any[];
+        response_error(error: Error): string;
+        response_headers(): string;
+        response_body(): string;
     }
 }
 
