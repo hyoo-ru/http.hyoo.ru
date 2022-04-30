@@ -182,9 +182,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-}
-
-declare namespace $ {
     namespace $$ { }
     const $mol_object_field: unique symbol;
     class $mol_object extends $mol_object2 {
@@ -656,7 +653,8 @@ declare namespace $ {
         whiteSpace?: 'normal' | 'nowrap' | 'break-spaces' | 'pre' | 'pre-wrap' | 'pre-line' | Common;
         webkitOverflowScrolling?: 'auto' | 'touch';
         scrollbar?: {
-            color?: readonly [Color, Color] | 'dark' | 'light' | 'auto' | Common;
+            color?: readonly [Color, Color] | 'auto' | Common;
+            width?: 'auto' | 'thin' | 'none' | Common;
         };
         scroll?: {
             snap?: {
@@ -2331,11 +2329,11 @@ declare namespace $ {
         Request(): $$.$mol_scroll;
         response_headers_title(): string;
         response_headers(): string;
-        Response_headers_output(): $$.$mol_textarea;
+        Response_headers_output(): $$.$mol_text_code;
         Response_headers(): $mol_labeler;
         response_body_title(): string;
         response_body(): string;
-        Response_body_output(): $$.$mol_textarea;
+        Response_body_output(): $$.$mol_text_code;
         Response_body(): $mol_labeler;
         response_output(): readonly any[];
         Response(): $$.$mol_scroll;

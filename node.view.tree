@@ -476,13 +476,11 @@ $hyoo_http $mol_page
 			<= Response $mol_scroll sub <= response_output /
 				<= Response_headers $mol_labeler
 					title <= response_headers_title @ \Response headers
-					Content <= Response_headers_output $mol_textarea
-						enabled false
-						value <= response_headers \
+					Content <= Response_headers_output $mol_text_code
+						text <= response_headers \
 				<= Response_body $mol_labeler
 					title <= response_body_title @ \Response body
-					Content <= Response_body_output $mol_textarea
-						enabled false
-						value <= response_body \
+					Content <= Response_body_output $mol_text_code
+						text <= response_body \
 	Response_error!error $mol_status
 		message <= response_error!error \
