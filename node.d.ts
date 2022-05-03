@@ -1983,7 +1983,7 @@ declare namespace $ {
     class $mol_grid extends $mol_view {
         row_height(): number;
         row_ids(): readonly string[][];
-        row_id(index: any): any;
+        row_id(id: any): any;
         col_ids(): readonly any[];
         records(): {};
         record(id: any): any;
@@ -2276,7 +2276,7 @@ declare namespace $ {
         length_max(): number;
         selection(val?: any): readonly number[];
         Edit(): $mol_textarea_edit;
-        row_numb(index: any): number;
+        row_numb(id: any): number;
         highlight(): string;
         View(): $$.$mol_text_code;
     }
@@ -2327,7 +2327,7 @@ declare namespace $ {
         plugins(): readonly any[];
         tools(): readonly any[];
         body(): readonly any[];
-        Response_error(error: any): $$.$mol_status;
+        Response_error(id: any): $$.$mol_status;
         Theme(): $$.$mol_theme_auto;
         Lights(): $$.$mol_lights_toggle;
         Source_link(): $mol_link_source;
@@ -2354,7 +2354,7 @@ declare namespace $ {
         response_output(): readonly any[];
         Response(): $$.$mol_scroll;
         Data(): $mol_view;
-        response_error(error: any): string;
+        response_error(id: any): string;
     }
 }
 
