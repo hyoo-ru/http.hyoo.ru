@@ -1,6 +1,5 @@
 [hyoo_http_uri_input] {
 	flex: 0 0 auto;
-	margin: .75rem;
 }
 
 [hyoo_http_body] {
@@ -11,11 +10,7 @@
 [hyoo_http_data] {
 	display: flex;
 	flex: auto;
-}
-
-[hyoo_http_request] > * ,
-[hyoo_http_response] > * {
-	margin: .75rem;
+	gap: var(--mol_gap_block);
 }
 
 [hyoo_http_request] {
