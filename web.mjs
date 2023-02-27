@@ -6813,6 +6813,43 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_promise() {
+        let done;
+        let fail;
+        const promise = new Promise((d, f) => {
+            done = d;
+            fail = f;
+        });
+        return Object.assign(promise, {
+            done,
+            fail,
+        });
+    }
+    $.$mol_promise = $mol_promise;
+})($ || ($ = {}));
+//mol/promise/promise.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_wait_timeout_async(timeout) {
+        const promise = $mol_promise();
+        const task = new this.$mol_after_timeout(timeout, () => promise.done());
+        return Object.assign(promise, {
+            destructor: () => task.destructor()
+        });
+    }
+    $.$mol_wait_timeout_async = $mol_wait_timeout_async;
+    function $mol_wait_timeout(timeout) {
+        return this.$mol_wire_sync(this).$mol_wait_timeout_async(timeout);
+    }
+    $.$mol_wait_timeout = $mol_wait_timeout;
+})($ || ($ = {}));
+//mol/wait/timeout/timeout.ts
+;
+"use strict";
+var $;
+(function ($) {
     $mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_uri_input] {\n\tflex: 0 0 auto;\n}\n\n[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n\tgap: var(--mol_gap_block);\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n}\n\n");
 })($ || ($ = {}));
 //hyoo/http/-css/http.view.css.ts
@@ -6842,6 +6879,7 @@ var $;
                 return this.$.$mol_state_arg.value('body', next) || '';
             }
             response() {
+                this.$.$mol_wait_timeout(1000);
                 const body = this.request_body();
                 return this.$.$mol_fetch.response(this.uri(), {
                     method: body ? 'put' : 'get',

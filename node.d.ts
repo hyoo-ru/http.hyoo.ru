@@ -2256,7 +2256,24 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_promise<Result = void>(): Promise<Result> & {
+        done: (res: Result | PromiseLike<Result>) => void;
+        fail: (error?: any) => void;
+    };
+}
+
+declare namespace $ {
     function $mol_wire_sync<Host extends object>(obj: Host): (Host extends (...args: infer Args) => infer Res ? Res extends Promise<infer Res2> ? (...args: Args) => Res2 : Host : {}) & { [key in keyof Host]: Host[key] extends (...args: infer Args_1) => Promise<infer Res_1> ? (...args: Args_1) => Res_1 : Host[key]; };
+}
+
+declare namespace $ {
+    function $mol_wait_timeout_async(this: $, timeout: number): Promise<void> & {
+        done: (res: void | PromiseLike<void>) => void;
+        fail: (error?: any) => void;
+    } & {
+        destructor: () => void;
+    };
+    function $mol_wait_timeout(this: $, timeout: number): void;
 }
 
 declare namespace $ {
