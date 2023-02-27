@@ -26,6 +26,7 @@ namespace $.$$ {
 
 		@ $mol_mem
 		response() {
+			this.$.$mol_wait_timeout( 1000 )
 			const body = this.request_body()
 			return this.$.$mol_fetch.response( this.uri() , {
 				method : body ? 'put' : 'get' ,
