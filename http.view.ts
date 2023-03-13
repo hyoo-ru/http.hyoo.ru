@@ -6,6 +6,10 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'uri' , next ) || super.uri()
 		}
 
+		method( next? : string ) {
+			return this.$.$mol_state_arg.value( 'method' , next ) || super.method()
+		}
+
 		request_headers( next? : string ) : string{
 			return this.$.$mol_state_arg.value( 'headers' , next ) || ''
 		}
@@ -26,10 +30,10 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		request_params( next = {
-			uri: '',
-			method: 'get',
-			headers: {},
-			body: undefined as string | undefined,
+			uri: $mol_wire_sync( ()=> this.uri() )(),
+			method: $mol_wire_sync( ()=> this.method() )(),
+			headers: $mol_wire_sync( ()=> this.request_headers_dict() )(),
+			body: $mol_wire_sync( ()=> this.request_body() || undefined )(),
 		} ) {
 			return next
 		}
