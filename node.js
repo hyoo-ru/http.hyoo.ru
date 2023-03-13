@@ -7575,25 +7575,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_promise() {
-        let done;
-        let fail;
-        const promise = new Promise((d, f) => {
-            done = d;
-            fail = f;
-        });
-        return Object.assign(promise, {
-            done,
-            fail,
-        });
-    }
-    $.$mol_promise = $mol_promise;
-})($ || ($ = {}));
-//mol/promise/promise.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_wire_sync(obj) {
         return new Proxy(obj, {
             get(obj, field) {
@@ -7616,6 +7597,25 @@ var $;
     $.$mol_wire_sync = $mol_wire_sync;
 })($ || ($ = {}));
 //mol/wire/sync/sync.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_promise() {
+        let done;
+        let fail;
+        const promise = new Promise((d, f) => {
+            done = d;
+            fail = f;
+        });
+        return Object.assign(promise, {
+            done,
+            fail,
+        });
+    }
+    $.$mol_promise = $mol_promise;
+})($ || ($ = {}));
+//mol/promise/promise.ts
 ;
 "use strict";
 var $;
@@ -7810,6 +7810,9 @@ var $;
             uri(next) {
                 return this.$.$mol_state_arg.value('uri', next) || super.uri();
             }
+            method(next) {
+                return this.$.$mol_state_arg.value('method', next) || super.method();
+            }
             request_headers(next) {
                 return this.$.$mol_state_arg.value('headers', next) || '';
             }
@@ -7826,10 +7829,10 @@ var $;
                 return this.$.$mol_state_arg.value('body', next) || '';
             }
             request_params(next = {
-                uri: '',
-                method: 'get',
-                headers: {},
-                body: undefined,
+                uri: $mol_wire_sync(() => this.uri())(),
+                method: $mol_wire_sync(() => this.method())(),
+                headers: $mol_wire_sync(() => this.request_headers_dict())(),
+                body: $mol_wire_sync(() => this.request_body() || undefined)(),
             }) {
                 return next;
             }

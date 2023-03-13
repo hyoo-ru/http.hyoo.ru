@@ -179,10 +179,10 @@
     "$mol_button_copy",
     "$mol_icon_clipboard_outline",
     "$mol_icon_clipboard",
+    "$mol_wire_sync",
     "$mol_wait_timeout",
     "$mol_wait",
     "$mol_promise",
-    "$mol_wire_sync",
     "$mol_fetch",
     "$mol_dom_parse"
   ],

@@ -2319,18 +2319,19 @@ declare namespace $ {
 declare namespace $.$$ {
     class $hyoo_http extends $.$hyoo_http {
         uri(next?: string): string;
+        method(next?: string): string;
         request_headers(next?: string): string;
         request_headers_dict(): Record<string, string>;
         request_body(next?: string): string;
         request_params(next?: {
             uri: string;
             method: string;
-            headers: {};
+            headers: Record<string, string>;
             body: string | undefined;
         }): {
             uri: string;
             method: string;
-            headers: {};
+            headers: Record<string, string>;
             body: string | undefined;
         };
         submit(): void;

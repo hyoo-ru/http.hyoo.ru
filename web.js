@@ -7187,6 +7187,9 @@ var $;
             uri(next) {
                 return this.$.$mol_state_arg.value('uri', next) || super.uri();
             }
+            method(next) {
+                return this.$.$mol_state_arg.value('method', next) || super.method();
+            }
             request_headers(next) {
                 return this.$.$mol_state_arg.value('headers', next) || '';
             }
@@ -7203,10 +7206,10 @@ var $;
                 return this.$.$mol_state_arg.value('body', next) || '';
             }
             request_params(next = {
-                uri: '',
-                method: 'get',
-                headers: {},
-                body: undefined,
+                uri: $mol_wire_sync(() => this.uri())(),
+                method: $mol_wire_sync(() => this.method())(),
+                headers: $mol_wire_sync(() => this.request_headers_dict())(),
+                body: $mol_wire_sync(() => this.request_body() || undefined)(),
             }) {
                 return next;
             }

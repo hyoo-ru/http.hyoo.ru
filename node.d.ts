@@ -2389,14 +2389,14 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_wire_sync<Host extends object>(obj: Host): (Host extends (...args: infer Args) => infer Res ? Res extends Promise<infer Res2> ? (...args: Args) => Res2 : Host : {}) & { [key in keyof Host]: Host[key] extends (...args: infer Args_1) => Promise<infer Res_1> ? (...args: Args_1) => Res_1 : Host[key]; };
+}
+
+declare namespace $ {
     function $mol_promise<Result = void>(): Promise<Result> & {
         done: (res: Result | PromiseLike<Result>) => void;
         fail: (error?: any) => void;
     };
-}
-
-declare namespace $ {
-    function $mol_wire_sync<Host extends object>(obj: Host): (Host extends (...args: infer Args) => infer Res ? Res extends Promise<infer Res2> ? (...args: Args) => Res2 : Host : {}) & { [key in keyof Host]: Host[key] extends (...args: infer Args_1) => Promise<infer Res_1> ? (...args: Args_1) => Res_1 : Host[key]; };
 }
 
 declare namespace $ {
@@ -2449,18 +2449,19 @@ declare namespace $ {
 declare namespace $.$$ {
     class $hyoo_http extends $.$hyoo_http {
         uri(next?: string): string;
+        method(next?: string): string;
         request_headers(next?: string): string;
         request_headers_dict(): Record<string, string>;
         request_body(next?: string): string;
         request_params(next?: {
             uri: string;
             method: string;
-            headers: {};
+            headers: Record<string, string>;
             body: string | undefined;
         }): {
             uri: string;
             method: string;
-            headers: {};
+            headers: Record<string, string>;
             body: string | undefined;
         };
         submit(): void;
