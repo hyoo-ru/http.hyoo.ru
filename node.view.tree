@@ -153,6 +153,8 @@ $mol_link_source $mol_link
 	sub /
 		<= Icon $mol_icon_github_circle
 
+$mol_icon_play $mol_icon path \M8,5.14V19.14L19,12.14L8,5.14Z
+
 $mol_hotkey $mol_plugin
 	event *
 		^
@@ -194,6 +196,44 @@ $mol_string $mol_view
 		<= Submit $mol_hotkey
 			mod_ctrl <= submit_with_ctrl false
 			key * enter?event <=> submit?event null
+
+$mol_bar $mol_view
+
+$mol_check_list $mol_view
+	Option* $mol_check
+		checked?val <=> option_checked*?val false
+		label <= option_label* /
+			<= option_title* \
+		enabled <= option_enabled* <= enabled true
+		hint <= option_hint* \
+		minimal_height 24
+	options *
+	keys /string
+	sub <= items /$mol_check
+
+$mol_switch $mol_check_list
+	value?val \
+
+$mol_list $mol_view
+	render_visible_only true
+	render_over 0
+	sub <= rows /$mol_view
+	Empty $mol_view
+	Gap_before $mol_view style * paddingTop <= gap_before 0
+	Gap_after $mol_view style * paddingTop <= gap_after 0
+	view_window /
+		0
+		0
+
+$mol_labeler $mol_list
+	rows /
+		<= Label $mol_view
+			minimal_height 32
+			sub <= label /$mol_view_content
+				<= title
+		<= Content $mol_view
+			minimal_height 24
+			sub <= content /
 
 $mol_stack $mol_view
 
@@ -246,17 +286,6 @@ $mol_text_code_row $mol_paragraph
 		needle <= highlight \
 		uri <= token_uri* \
 	find_pos* null
-
-$mol_list $mol_view
-	render_visible_only true
-	render_over 0
-	sub <= rows /$mol_view
-	Empty $mol_view
-	Gap_before $mol_view style * paddingTop <= gap_before 0
-	Gap_after $mol_view style * paddingTop <= gap_after 0
-	view_window /
-		0
-		0
 
 $mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3
 
@@ -363,16 +392,6 @@ $mol_textarea_edit $mol_string
 		^
 		scrollTop 0
 
-$mol_labeler $mol_list
-	rows /
-		<= Label $mol_view
-			minimal_height 32
-			sub <= label /$mol_view_content
-				<= title
-		<= Content $mol_view
-			minimal_height 24
-			sub <= content /
-
 $hyoo_http $mol_page
 	title @ \HTTP request browser
 	plugins /
@@ -382,19 +401,39 @@ $hyoo_http $mol_page
 		<= Source_link $mol_link_source
 			uri \https://github.com/hyoo-ru/http.hyoo.ru
 	body /
-		<= Uri_input $mol_string
-			value?val <=> uri?val \
-			hint <= uri_hint @ \URI
+		<= Main $mol_bar sub /
+			<= Run $mol_button_minor
+				click? <=> submit? null
+				sub /
+					<= Run_icon $mol_icon_play
+			<= Uri_input $mol_string
+				value?val <=> uri?val \
+				hint <= uri_hint @ \URI
+				submit? <=> submit? null
 		<= Data $mol_view sub /
 			<= Request $mol_scroll sub /
+				<= Request_method $mol_labeler
+					title <= request_method_title @ \Method
+					Content <= Request_method_input $mol_switch
+						value?val <=> method?val \get
+						options *
+							get \GET
+							head \HEAD
+							options \OPTIONS
+							put \PUT
+							post \POST
+							patch \PATCH
+							delete \DELETE
 				<= Request_headers $mol_labeler
 					title <= request_headers_title @ \Request headers
 					Content <= Request_headers_input $mol_textarea
 						value?val <=> request_headers?val \
+						submit? <=> submit? null
 				<= Request_body $mol_labeler
 					title <= request_body_title @ \Request body
 					Content <= Request_body_input $mol_textarea
 						value?val <=> request_body?val \
+						submit? <=> submit? null
 			<= Response $mol_scroll sub <= response_output /
 				<= Response_headers $mol_labeler
 					title <= response_headers_title @ \Response headers

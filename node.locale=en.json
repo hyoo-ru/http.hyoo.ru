@@ -1,6 +1,7 @@
 {
 	"$hyoo_http_request_body_title": "Request body",
 	"$hyoo_http_request_headers_title": "Request headers",
+	"$hyoo_http_request_method_title": "Method",
 	"$hyoo_http_response_body_title": "Response body",
 	"$hyoo_http_response_headers_title": "Response headers",
 	"$hyoo_http_title": "HTTP request browser",
