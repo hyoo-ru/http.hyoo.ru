@@ -23,16 +23,31 @@ namespace $.$$ {
 		request_body( next? : string ) {
 			return this.$.$mol_state_arg.value( 'body' , next ) || ''
 		}
+		
+		@ $mol_mem
+		request_params( next = {
+			uri: '',
+			method: 'get',
+			headers: {},
+			body: undefined as string | undefined,
+		} ) {
+			return next
+		}
+		
+		submit() {
+			this.request_params({
+				uri: this.uri(),
+				method: this.method() ,
+				headers: this.request_headers_dict() ,
+				body: this.request_body() || undefined ,
+			} )
+		}
 
 		@ $mol_mem
 		response() {
 			this.$.$mol_wait_timeout( 1000 )
-			const body = this.request_body()
-			return this.$.$mol_fetch.response( this.uri() , {
-				method : body ? 'put' : 'get' ,
-				headers : this.request_headers_dict() ,
-				body : body || undefined ,
-			} )
+			const { uri, ... params } = this.request_params()
+			return this.$.$mol_fetch.response( uri, params )
 		}
 		
 		response_output() {

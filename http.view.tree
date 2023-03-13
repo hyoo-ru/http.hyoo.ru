@@ -7,19 +7,39 @@ $hyoo_http $mol_page
 		<= Source_link $mol_link_source
 			uri \https://github.com/hyoo-ru/http.hyoo.ru
 	body /
-		<= Uri_input $mol_string
-			value?val <=> uri?val \
-			hint <= uri_hint @ \URI
+		<= Main $mol_bar sub /
+			<= Run $mol_button_minor
+				click? <=> submit? null
+				sub /
+					<= Run_icon $mol_icon_play
+			<= Uri_input $mol_string
+				value?val <=> uri?val \
+				hint <= uri_hint @ \URI
+				submit? <=> submit? null
 		<= Data $mol_view sub /
 			<= Request $mol_scroll sub /
+				<= Request_method $mol_labeler
+					title <= request_method_title @ \Method
+					Content <= Request_method_input $mol_switch
+						value?val <=> method?val \get
+						options *
+							get \GET
+							head \HEAD
+							options \OPTIONS
+							put \PUT
+							post \POST
+							patch \PATCH
+							delete \DELETE
 				<= Request_headers $mol_labeler
 					title <= request_headers_title @ \Request headers
 					Content <= Request_headers_input $mol_textarea
 						value?val <=> request_headers?val \
+						submit? <=> submit? null
 				<= Request_body $mol_labeler
 					title <= request_body_title @ \Request body
 					Content <= Request_body_input $mol_textarea
 						value?val <=> request_body?val \
+						submit? <=> submit? null
 			<= Response $mol_scroll sub <= response_output /
 				<= Response_headers $mol_labeler
 					title <= response_headers_title @ \Response headers

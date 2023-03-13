@@ -1,7 +1,3 @@
-[hyoo_http_uri_input] {
-	flex: 0 0 auto;
-}
-
 [hyoo_http_body] {
 	display: flex;
 	flex-direction: column;
