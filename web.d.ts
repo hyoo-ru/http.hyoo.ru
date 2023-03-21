@@ -2133,6 +2133,7 @@ declare namespace $ {
         Row(id: any): $$.$mol_text_code_row;
         rows(): readonly any[];
         Rows(): $$.$mol_list;
+        text_export(): string;
         Copy(): $$.$mol_button_copy;
     }
 }
@@ -2169,6 +2170,7 @@ declare namespace $.$$ {
         }>;
         uri_base(): string;
         uri_resolve(uri: string): string;
+        text_export(): string;
     }
 }
 
