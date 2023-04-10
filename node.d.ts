@@ -1194,8 +1194,8 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_huggingface_run(this: $, space: string, method: string | number, ...data: readonly any[]): readonly string[];
-    function $mol_huggingface_async(space: string, method: number, ...data: readonly any[]): Promise<[string]> & {
+    function $mol_huggingface_run(this: $, space: string, method: string | number, ...data: readonly any[]): any[] | readonly string[];
+    function $mol_huggingface_async(space: string, method: number, ...data: readonly any[]): Promise<any[]> & {
         destructor: () => void;
     };
 }
@@ -1213,7 +1213,7 @@ declare namespace $ {
         static lang(next?: string): string;
         static source(lang: string): any;
         static texts(lang: string, next?: $mol_locale_dict): $mol_locale_dict;
-        static text(key: string): {} | null;
+        static text(key: string): string;
         static warn(key: string): null;
     }
 }
@@ -1601,7 +1601,7 @@ declare namespace $ {
 declare namespace $ {
     class $mol_lights_toggle extends $mol_check_icon {
         Icon(): $mol_icon_brightness_6;
-        hint(): {} | null;
+        hint(): string;
         checked(val?: any): boolean;
         Lights_icon(): $mol_icon_brightness_6;
         lights(val?: any): boolean;
@@ -1667,7 +1667,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_link_source extends $mol_link {
-        hint(): {} | null;
+        hint(): string;
         sub(): readonly any[];
         Icon(): $mol_icon_github_circle;
     }
@@ -2486,7 +2486,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $hyoo_http extends $mol_page {
-        title(): {} | null;
+        title(): string;
         plugins(): readonly any[];
         tools(): readonly any[];
         body(): readonly any[];
@@ -2498,27 +2498,27 @@ declare namespace $ {
         Run_icon(): $mol_icon_play;
         Run(): $mol_button_minor;
         uri(val?: any): string;
-        uri_hint(): {} | null;
+        uri_hint(): string;
         Uri_input(): $$.$mol_string;
         Main(): $mol_bar;
-        request_method_title(): {} | null;
+        request_method_title(): string;
         method(val?: any): string;
         Request_method_input(): $$.$mol_switch;
         Request_method(): $mol_labeler;
-        request_headers_title(): {} | null;
+        request_headers_title(): string;
         request_headers(val?: any): string;
         Request_headers_input(): $$.$mol_textarea;
         Request_headers(): $mol_labeler;
-        request_body_title(): {} | null;
+        request_body_title(): string;
         request_body(val?: any): string;
         Request_body_input(): $$.$mol_textarea;
         Request_body(): $mol_labeler;
         Request(): $$.$mol_scroll;
-        response_headers_title(): {} | null;
+        response_headers_title(): string;
         response_headers(): string;
         Response_headers_output(): $$.$mol_text_code;
         Response_headers(): $mol_labeler;
-        response_body_title(): {} | null;
+        response_body_title(): string;
         response_body(): string;
         Response_body_output(): $$.$mol_text_code;
         Response_body(): $mol_labeler;
