@@ -2977,14 +2977,14 @@ var $;
 var $;
 (function ($) {
     class $mol_scroll extends $mol_view {
-        scroll_top(val) {
-            if (val !== undefined)
-                return val;
+        scroll_top(next) {
+            if (next !== undefined)
+                return next;
             return 0;
         }
-        scroll_left(val) {
-            if (val !== undefined)
-                return val;
+        scroll_left(next) {
+            if (next !== undefined)
+                return next;
             return 0;
         }
         field() {
@@ -3356,8 +3356,8 @@ var $;
         body() {
             return [];
         }
-        body_scroll_top(val) {
-            return this.Body().scroll_top(val);
+        body_scroll_top(next) {
+            return this.Body().scroll_top(next);
         }
         Body() {
             const obj = new this.$.$mol_scroll();
@@ -5221,16 +5221,16 @@ var $;
         hint() {
             return this.$.$mol_locale.text('$mol_lights_toggle_hint');
         }
-        checked(val) {
-            return this.lights(val);
+        checked(next) {
+            return this.lights(next);
         }
         Lights_icon() {
             const obj = new this.$.$mol_icon_brightness_6();
             return obj;
         }
-        lights(val) {
-            if (val !== undefined)
-                return val;
+        lights(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
     }
@@ -5585,9 +5585,9 @@ var $;
         autocomplete() {
             return false;
         }
-        selection(val) {
-            if (val !== undefined)
-                return val;
+        selection(next) {
+            if (next !== undefined)
+                return next;
             return [
                 0,
                 0
@@ -5636,13 +5636,13 @@ var $;
         disabled() {
             return false;
         }
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
-        value_changed(val) {
-            return this.value(val);
+        value_changed(next) {
+            return this.value(next);
         }
         hint() {
             return "";
@@ -5671,9 +5671,9 @@ var $;
         length_max() {
             return +Infinity;
         }
-        type(val) {
-            if (val !== undefined)
-                return val;
+        type(next) {
+            if (next !== undefined)
+                return next;
             return "text";
         }
         event_change(event) {
@@ -5812,7 +5812,7 @@ var $;
     class $mol_check_list extends $mol_view {
         Option(id) {
             const obj = new this.$.$mol_check();
-            obj.checked = (val) => this.option_checked(id, val);
+            obj.checked = (next) => this.option_checked(id, next);
             obj.label = () => this.option_label(id);
             obj.enabled = () => this.option_enabled(id);
             obj.hint = () => this.option_hint(id);
@@ -5828,9 +5828,9 @@ var $;
         sub() {
             return this.items();
         }
-        option_checked(id, val) {
-            if (val !== undefined)
-                return val;
+        option_checked(id, next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         option_title(id) {
@@ -5905,9 +5905,9 @@ var $;
 var $;
 (function ($) {
     class $mol_switch extends $mol_check_list {
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
     }
@@ -7556,9 +7556,9 @@ var $;
                 bracketClose: "}"
             };
         }
-        clickable(val) {
-            if (val !== undefined)
-                return val;
+        clickable(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         sidebar_showed() {
@@ -7574,9 +7574,9 @@ var $;
                 return event;
             return null;
         }
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         hint() {
@@ -7591,9 +7591,9 @@ var $;
         length_max() {
             return +Infinity;
         }
-        selection(val) {
-            if (val !== undefined)
-                return val;
+        selection(next) {
+            if (next !== undefined)
+                return next;
             return [];
         }
         submit(next) {
@@ -7606,12 +7606,12 @@ var $;
         }
         Edit() {
             const obj = new this.$.$mol_textarea_edit();
-            obj.value = (val) => this.value(val);
+            obj.value = (next) => this.value(next);
             obj.hint = () => this.hint();
             obj.enabled = () => this.enabled();
             obj.spellcheck = () => this.spellcheck();
             obj.length_max = () => this.length_max();
-            obj.selection = (val) => this.selection(val);
+            obj.selection = (next) => this.selection(next);
             obj.submit = (next) => this.submit(next);
             obj.submit_with_ctrl = () => true;
             return obj;

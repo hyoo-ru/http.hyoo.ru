@@ -1,6 +1,6 @@
 $mol_scroll $mol_view
-	scroll_top?val 0
-	scroll_left?val 0
+	scroll_top? 0
+	scroll_left? 0
 	field *
 		^
 		tabIndex <= tabindex -1
@@ -26,7 +26,7 @@ $mol_page $mol_view
 				<= Tools $mol_view
 					sub <= tools /$mol_view_content
 		<= Body $mol_scroll
-			scroll_top?val => body_scroll_top?val
+			scroll_top? => body_scroll_top?
 			sub <= body /$mol_view_content
 		<= Foot $mol_view
 			dom_name \footer
@@ -127,7 +127,7 @@ $mol_icon_brightness_6 $mol_icon path \M12,18V6C15.31,6 18,8.69 18,12C18,15.31 1
 $mol_lights_toggle $mol_check_icon
 	Icon <= Lights_icon $mol_icon_brightness_6
 	hint @ \Toggle lights
-	checked?val <=> lights?val false
+	checked? <=> lights? false
 
 $mol_link $mol_view
 	uri \
@@ -169,7 +169,7 @@ $mol_string $mol_view
 	enabled true
 	minimal_height 40
 	autocomplete false
-	selection?val /number
+	selection? /number
 		0
 		0
 	auto /
@@ -177,7 +177,7 @@ $mol_string $mol_view
 	field *
 		^
 		disabled <= disabled false
-		value <= value_changed?val <=> value?val \
+		value <= value_changed? <=> value? \
 		placeholder <= hint_visible <= hint \
 		spellcheck <= spellcheck true
 		autocomplete <= autocomplete_native \
@@ -188,7 +188,7 @@ $mol_string $mol_view
 	attr *
 		^
 		maxlength <= length_max +Infinity
-		type <= type?val \text
+		type <= type? \text
 	event *
 		^
 		input?event <=> event_change?event null
@@ -201,7 +201,7 @@ $mol_bar $mol_view
 
 $mol_check_list $mol_view
 	Option* $mol_check
-		checked?val <=> option_checked*?val false
+		checked? <=> option_checked*? false
 		label <= option_label* /
 			<= option_title* \
 		enabled <= option_enabled* <= enabled true
@@ -212,7 +212,7 @@ $mol_check_list $mol_view
 	sub <= items /$mol_check
 
 $mol_switch $mol_check_list
-	value?val \
+	value? \
 
 $mol_list $mol_view
 	render_visible_only true
@@ -331,19 +331,19 @@ $mol_text_code $mol_stack
 $mol_textarea $mol_stack
 	attr *
 		^
-		mol_textarea_clickable <= clickable?val false
+		mol_textarea_clickable <= clickable? false
 		mol_textarea_sidebar_showed <= sidebar_showed false
 	event *
 		keydown?event <=> press?event null
 		pointermove?event <=> hover?event null
 	sub /
 		<= Edit $mol_textarea_edit
-			value?val <=> value?val \
+			value? <=> value? \
 			hint <= hint \ 
 			enabled <= enabled true
 			spellcheck <= spellcheck true
 			length_max <= length_max +Infinity
-			selection?val <=> selection?val /number
+			selection? <=> selection? /number
 			bring => bring
 			submit? <=> submit? null
 			submit_with_ctrl true
