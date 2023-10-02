@@ -200,6 +200,7 @@ $mol_string $mol_view
 $mol_bar $mol_view
 
 $mol_check_list $mol_view
+	dictionary *
 	Option* $mol_check
 		checked? <=> option_checked*? false
 		label <= option_label* /
