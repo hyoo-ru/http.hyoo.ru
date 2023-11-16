@@ -883,11 +883,15 @@ var $;
 (function ($) {
     $.$mol_key_store = new WeakMap();
     function $mol_key(value) {
+        if (typeof value === 'bigint')
+            return value.toString() + 'n';
         if (!value)
             return JSON.stringify(value);
         if (typeof value !== 'object' && typeof value !== 'function')
             return JSON.stringify(value);
         return JSON.stringify(value, (field, value) => {
+            if (typeof value === 'bigint')
+                return value.toString() + 'n';
             if (!value)
                 return value;
             if (typeof value !== 'object' && typeof value !== 'function')
@@ -5261,7 +5265,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/check/check.css", "[mol_check] {\n\tflex: 0 0 auto;\n\tjustify-content: flex-start;\n\talign-content: center;\n\talign-items: flex-start;\n\tborder: none;\n\tfont-weight: inherit;\n\tbox-shadow: none;\n\ttext-align: left;\n\tdisplay: inline-flex;\n\tflex-wrap: nowrap;\n}\n\n[mol_check_title] {\n\tflex-shrink: 1;\n}\n");
+    $mol_style_attach("mol/check/check.css", "[mol_check] {\n\tflex: 0 0 auto;\n\tjustify-content: flex-start;\n\talign-content: center;\n\t/* align-items: flex-start; */\n\tborder: none;\n\tfont-weight: inherit;\n\tbox-shadow: none;\n\ttext-align: left;\n\tdisplay: inline-flex;\n\tflex-wrap: nowrap;\n}\n\n[mol_check_title] {\n\tflex-shrink: 1;\n}\n");
 })($ || ($ = {}));
 //mol/check/-css/check.css.ts
 ;
@@ -8075,12 +8079,19 @@ var $;
             obj.Content = () => this.Request_body_input();
             return obj;
         }
-        Request() {
-            const obj = new this.$.$mol_scroll();
-            obj.sub = () => [
+        Request_locks() {
+            const obj = new this.$.$mol_list();
+            obj.rows = () => [
                 this.Request_method(),
                 this.Request_headers(),
                 this.Request_body()
+            ];
+            return obj;
+        }
+        Request() {
+            const obj = new this.$.$mol_scroll();
+            obj.sub = () => [
+                this.Request_locks()
             ];
             return obj;
         }
@@ -8124,9 +8135,16 @@ var $;
                 this.Response_body()
             ];
         }
+        Response_blocks() {
+            const obj = new this.$.$mol_list();
+            obj.rows = () => this.response_output();
+            return obj;
+        }
         Response() {
             const obj = new this.$.$mol_scroll();
-            obj.sub = () => this.response_output();
+            obj.sub = () => [
+                this.Response_blocks()
+            ];
             return obj;
         }
         Data() {
@@ -8200,6 +8218,9 @@ var $;
     ], $hyoo_http.prototype, "Request_body", null);
     __decorate([
         $mol_mem
+    ], $hyoo_http.prototype, "Request_locks", null);
+    __decorate([
+        $mol_mem
     ], $hyoo_http.prototype, "Request", null);
     __decorate([
         $mol_mem
@@ -8213,6 +8234,9 @@ var $;
     __decorate([
         $mol_mem
     ], $hyoo_http.prototype, "Response_body", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_http.prototype, "Response_blocks", null);
     __decorate([
         $mol_mem
     ], $hyoo_http.prototype, "Response", null);
@@ -8353,7 +8377,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_body] {\n\tdisplay: flex;\n\tflex-direction: column;\n}\n\n[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n\tgap: var(--mol_gap_block);\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n}\n\n");
+    $mol_style_attach("hyoo/http/http.view.css", "[hyoo_http_data] {\n\tdisplay: flex;\n\tflex: auto;\n\tgap: var(--mol_gap_block);\n}\n\n[hyoo_http_request] {\n\tflex: 1 1 33%;\n}\n\n[hyoo_http_response] {\n\tflex: 1 1 66%;\n}\n\n");
 })($ || ($ = {}));
 //hyoo/http/-css/http.view.css.ts
 ;
@@ -10367,6 +10391,7 @@ var $;
             $mol_assert_equal($mol_key(false), 'false');
             $mol_assert_equal($mol_key(true), 'true');
             $mol_assert_equal($mol_key(0), '0');
+            $mol_assert_equal($mol_key(1n << 64n), '18446744073709551616n');
             $mol_assert_equal($mol_key(''), '""');
         },
         'Array & POJO'() {

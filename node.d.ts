@@ -2418,6 +2418,7 @@ declare namespace $ {
         request_body(val?: any): string;
         Request_body_input(): $$.$mol_textarea;
         Request_body(): $mol_labeler;
+        Request_locks(): $$.$mol_list;
         Request(): $$.$mol_scroll;
         response_headers_title(): string;
         response_headers(): string;
@@ -2428,6 +2429,7 @@ declare namespace $ {
         Response_body_output(): $$.$mol_text_code;
         Response_body(): $mol_labeler;
         response_output(): readonly any[];
+        Response_blocks(): $$.$mol_list;
         Response(): $$.$mol_scroll;
         Data(): $mol_view;
         response_error(id: any): string;
