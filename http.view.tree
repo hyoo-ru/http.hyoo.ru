@@ -17,7 +17,7 @@ $hyoo_http $mol_page
 				hint <= uri_hint @ \URI
 				submit? <=> submit? null
 		<= Data $mol_view sub /
-			<= Request $mol_scroll sub /
+			<= Request $mol_scroll sub / <= Request_locks $mol_list rows /
 				<= Request_method $mol_labeler
 					title <= request_method_title @ \Method
 					Content <= Request_method_input $mol_switch
@@ -40,7 +40,7 @@ $hyoo_http $mol_page
 					Content <= Request_body_input $mol_textarea
 						value?val <=> request_body?val \
 						submit? <=> submit? null
-			<= Response $mol_scroll sub <= response_output /
+			<= Response $mol_scroll sub / <= Response_blocks $mol_list rows <= response_output /
 				<= Response_headers $mol_labeler
 					title <= response_headers_title @ \Response headers
 					Content <= Response_headers_output $mol_text_code
