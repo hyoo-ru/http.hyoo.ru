@@ -34,13 +34,6 @@ $mol_page $mol_view
 			dom_name \footer
 			sub <= foot /$mol_view
 
-$mol_status $mol_view
-	status <= title
-	minimal_height 24
-	minimal_width 0
-	sub /
-		<= message \
-
 $mol_theme_auto $mol_plugin
 	attr * mol_theme <= theme \
 
@@ -411,6 +404,13 @@ $mol_textarea_edit $mol_string
 	field *
 		^
 		scrollTop 0
+
+$mol_status $mol_view
+	status <= title
+	minimal_height 24
+	minimal_width 0
+	sub /
+		<= message \
 
 $hyoo_http $mol_page
 	title @ \HTTP request browser
